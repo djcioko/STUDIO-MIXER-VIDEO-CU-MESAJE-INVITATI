@@ -1,62 +1,65 @@
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MV STUDIO PRO - CLEAN & STABLE</title>
+    <title>MV STUDIO PRO - REBORN 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         :root { --main: #ffaa00; --msg-size: 26px; }
-        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: sans-serif; }
+        body, html { margin: 0; padding: 0; width: 100vw; height: 100vh; background: #000; overflow: hidden; font-family: sans-serif; color: white; }
         
-        #viewport { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+        #viewport { position: relative; width: 100%; height: calc(100% - 180px); overflow: hidden; background: #000; }
 
-        /* FUNDALURI (FARA OVERLAY COLOR) */
+        /* FUNDALURI */
         #bg-v, #bg-i, #bg-s { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 1; }
 
-        /* CAMERA AI CUT (CERC PERFECT) */
+        /* CAMERA CU AI CUT (CERC PERFECT) */
         #cam-box { 
             position: absolute; z-index: 10; cursor: move; 
-            width: 180px; height: 180px; border-radius: 50%; 
-            border: 3px solid var(--main); overflow: hidden;
+            width: 200px; height: 200px; 
+            border-radius: 50%; /* AI CUT */
+            border: 3px solid var(--main); 
+            overflow: hidden; display: none;
+            aspect-ratio: 1 / 1;
         }
         #v-src { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-        /* VUMETRU */
-        #circle-box { position: absolute; z-index: 15; cursor: move; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
-        #radial-canvas { position: absolute; pointer-events: none; }
-        #inner-circle { width: 130px; height: 130px; border-radius: 50%; border: 3px solid var(--main); background: #000; overflow: hidden; }
+        /* VUMETRU + UPLOAD LOGO */
+        #circle-box { position: absolute; z-index: 15; cursor: move; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; }
+        #radial-canvas { position: absolute; pointer-events: none; z-index: 16; }
+        #inner-circle { 
+            width: 140px; height: 140px; border-radius: 50%; 
+            border: 2px solid var(--main); background: #111; 
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            z-index: 17;
+        }
+        #inner-img { width: 100%; height: 100%; object-fit: cover; display: none; }
 
-        /* TEXT STUDIO */
-        #branding { position: absolute; z-index: 20; cursor: move; color: white; font-weight: 900; text-shadow: 2px 2px 10px #000; }
-
-        /* MESAJE FIREBASE (STRAT SUPREM) */
+        /* MESAJE FIREBASE */
         #msg-box {
-            position: absolute; z-index: 9999 !important; 
-            background: rgba(0, 0, 0, 0.9); border-left: 8px solid var(--main);
-            padding: 20px; border-radius: 0 15px 15px 0;
+            position: absolute; z-index: 9999 !important; background: rgba(0, 0, 0, 0.9); 
+            border-left: 8px solid var(--main); padding: 20px; border-radius: 0 15px 15px 0; 
             min-width: 300px; max-width: 550px; cursor: move; display: none;
         }
-        #msg-user { color: var(--main); font-weight: bold; font-size: 18px; text-transform: uppercase; }
-        #msg-txt { color: white; font-size: var(--msg-size); font-style: italic; }
 
-        /* CONSOLA DJ MINI */
+        /* PANOU CONTROL COMPACT */
         #gui {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            z-index: 10000; background: rgba(10, 10, 10, 0.9);
-            display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding: 4px;
+            position: absolute; bottom: 0; left: 0; right: 0; height: 180px;
+            background: #0a0a0a; border-top: 2px solid #333;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 10px;
         }
-        .cube { background: #1a1a1a; padding: 4px; border-radius: 3px; display: flex; flex-direction: column; gap: 2px; border: 1px solid #222; }
-        h4 { color: var(--main); font-size: 8px; text-align: center; font-weight: bold; }
-        button { background: #333; color: white; font-size: 8px; padding: 3px; border-radius: 2px; }
-        button:hover { background: var(--main); color: #000; }
-        .btn-off { background: #551111 !important; }
-        .btn-fs { background: #ff4400 !important; color: white !important; }
-        input { background: #000; color: white; font-size: 8px; width: 100%; }
-        input[type="range"] { accent-color: var(--main); }
+        .cube { background: #161616; padding: 8px; border-radius: 6px; border: 1px solid #222; display: flex; flex-direction: column; gap: 4px; }
+        h4 { color: var(--main); font-size: 9px; text-align: center; font-weight: bold; text-transform: uppercase; }
+        .btn { width: 100%; padding: 6px; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 9px; cursor: pointer; border: none; }
+        .st-off { background: #441111; color: #ff9999; }
+        .st-on { background: #114411; color: #99ff99; border: 1px solid #00ff00; }
+        .btn-blue { background: #1e40af; color: white; }
+        input[type="file"] { font-size: 8px; color: #666; width: 100%; }
+        input[type="range"] { accent-color: var(--main); height: 12px; }
+        label { font-size: 8px; color: #888; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -70,84 +73,113 @@
             <video id="v-src" autoplay playsinline></video>
         </div>
 
-        <div id="circle-box" style="top:30%; left:40%;">
+        <div id="circle-box" style="top:20%; left:35%;">
             <canvas id="radial-canvas" width="400" height="400"></canvas>
             <div id="inner-circle">
-                <img id="inner-img" style="width:100%; height:100%; object-fit:cover; display:none;">
+                <img id="inner-img">
             </div>
         </div>
 
-        <div id="branding" style="bottom:100px; left:40px; font-size:35px;">STUDIO MV PRO</div>
+        <div id="branding" style="bottom:100px; left:40px; position:absolute; font-weight:900; text-transform:uppercase; font-size:35px; text-shadow:2px 2px 10px #000; z-index:20; cursor:move;">STUDIO MV PRO</div>
 
-        <div id="msg-box" style="top:80px; left:40px;">
-            <span id="msg-user">INVITAT</span><br>
-            <span id="msg-txt">Mesajul live...</span>
+        <div id="msg-box" style="top:100px; left:40px;">
+            <span id="msg-user" style="color:var(--main); font-weight:bold; text-transform:uppercase;">INVITAT</span><br>
+            <span id="msg-txt" style="font-size:var(--msg-size); font-style:italic;">Mesajul...</span>
+        </div>
+    </div>
+
+    <div id="gui">
+        <div class="cube">
+            <h4>1. Fundal</h4>
+            <input type="file" onchange="loadF(this, 'bg-v')">
+            <button id="b-v" class="btn st-off" onclick="tgL('bg-v', 'b-v')">VIDEO: OFF</button>
+            <button id="b-i" class="btn st-off" onclick="tgL('bg-i', 'b-i')">FOTO: OFF</button>
         </div>
 
-        <div id="gui">
-            <div class="cube"><h4>VIDEO</h4><input type="file" onchange="loadV(this)"><button onclick="toggleBG('bg-v')">ON/OFF</button></div>
-            <div class="cube"><h4>FOTO</h4><input type="file" onchange="loadI(this)"><button onclick="toggleBG('bg-i')">ON/OFF</button></div>
-            <div class="cube"><h4>SLIDE</h4><input type="file" multiple onchange="loadS(this)"><button onclick="toggleBG('bg-s')">ON/OFF</button></div>
-            <div class="cube"><h4>CAM</h4><button onclick="initCam()">START</button><input type="range" min="0" max="1" step="0.1" value="1" oninput="document.getElementById('cam-box').style.opacity=this.value"></div>
-            <div class="cube"><h4>TEXT</h4><input type="text" oninput="document.getElementById('branding').innerText=this.value"><input type="range" min="20" max="100" value="35" oninput="document.getElementById('branding').style.fontSize=this.value+'px'"></div>
-            <div class="cube"><h4>MSG</h4><input type="text" id="ev-id" value="test_dj" onchange="updateDb(this.value)"><input type="range" min="15" max="60" value="26" oninput="document.documentElement.style.setProperty('--msg-size', this.value+'px')"></div>
-            <div class="cube"><h4>SCREEN</h4><button class="btn-fs" onclick="goFS()">FULL SCREEN</button><button class="btn-off" onclick="location.reload()">RESET</button></div>
+        <div class="cube">
+            <h4>2. Slideshow</h4>
+            <input type="file" multiple onchange="loadS(this)">
+            <button id="b-s" class="btn st-off" onclick="tgL('bg-s', 'b-s')">SLIDE: OFF</button>
+            <input type="range" min="1" max="10" value="3" id="s-spd">
+        </div>
+
+        <div class="cube">
+            <h4>3. Camera (AI CUT)</h4>
+            <button class="btn btn-blue" onclick="initC()">ACTIVAȚI CAM</button>
+            <button id="b-c" class="btn st-off" onclick="tgC()">AI CUT: OFF</button>
+            <label>Mărime / Opacitate</label>
+            <input type="range" min="0.5" max="2" step="0.1" value="1" oninput="document.getElementById('cam-box').style.transform=`scale(${this.value})` ">
+            <input type="range" min="0" max="1" step="0.1" value="1" oninput="document.getElementById('cam-box').style.opacity=this.value">
+        </div>
+
+        <div class="cube">
+            <h4>4. Vumetru Logo</h4>
+            <label>Upload Logo (PNG):</label>
+            <input type="file" onchange="loadP(this)">
+            <button id="b-p" class="btn st-off" onclick="tgP()">LOGO: OFF</button>
+            <input type="range" min="0.5" max="1.5" step="0.1" value="1" oninput="document.getElementById('circle-box').style.transform=`scale(${this.value})` ">
+        </div>
+
+        <div class="cube">
+            <h4>5. Text & Screen</h4>
+            <input type="text" placeholder="Text Studio..." class="bg-black text-white p-1 text-[10px]" oninput="document.getElementById('branding').innerText=this.value">
+            <input type="range" min="20" max="100" value="35" oninput="document.getElementById('branding').style.fontSize=this.value+'px'">
+            <button class="btn btn-blue" onclick="goFS()">FULL SCREEN</button>
+        </div>
+
+        <div class="cube">
+            <h4>6. Firebase</h4>
+            <input type="text" id="ev-id" value="test_dj" class="bg-black text-white p-1 text-[10px]" onchange="upDb(this.value)">
+            <label>Mărime Text Mesaj:</label>
+            <input type="range" min="15" max="60" value="26" oninput="document.documentElement.style.setProperty('--msg-size', this.value+'px')">
         </div>
     </div>
 
 <script>
     firebase.initializeApp({ databaseURL: "https://felicitari-nunta-default-rtdb.firebaseio.com" });
     let db = firebase.database().ref('test_dj');
-    let mTimer, sTimer, sFiles = [], sIdx = 0;
+    let mTim, sTim, sFiles = [], sIdx = 0;
 
-    function goFS() {
-        let v = document.getElementById('viewport');
-        if (v.requestFullscreen) v.requestFullscreen();
-        else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen();
-    }
+    function goFS() { let v = document.getElementById('viewport'); if (v.requestFullscreen) v.requestFullscreen(); else if (v.webkitRequestFullscreen) v.webkitRequestFullscreen(); }
 
-    function updateDb(id) { db.off(); db = firebase.database().ref(id); listen(); }
-    function listen() {
-        db.limitToLast(1).on('child_added', (sn) => {
-            const d = sn.val();
-            const box = document.getElementById('msg-box');
-            document.getElementById('msg-user').innerText = d.author;
-            document.getElementById('msg-txt').innerText = `"${d.text}"`;
-            box.style.display = 'block';
-            if(mTimer) clearTimeout(mTimer);
-            mTimer = setTimeout(() => { box.style.display = 'none'; }, 10000);
-        });
-    }
-
-    function toggleBG(id) {
-        let el = document.getElementById(id);
-        let isVisible = el.style.display === 'block';
-        document.getElementById('bg-v').style.display = 'none';
-        document.getElementById('bg-i').style.display = 'none';
-        document.getElementById('bg-s').style.display = 'none';
-        if(sTimer) clearTimeout(sTimer);
-        
-        if (!isVisible) {
-            el.style.display = 'block';
-            if(id === 'bg-s') runSlide();
-        }
-    }
-
-    function loadV(i){ document.getElementById('bg-v').src=URL.createObjectURL(i.files[0]); }
-    function loadI(i){ document.getElementById('bg-i').src=URL.createObjectURL(i.files[0]); }
-    function loadS(i){ sFiles = Array.from(i.files).map(f => URL.createObjectURL(f)); }
+    // --- LOGICA LAYERS ---
+    function loadF(i, id) { document.getElementById(id).src = URL.createObjectURL(i.files[0]); }
+    function loadS(i) { sFiles = Array.from(i.files).map(f => URL.createObjectURL(f)); }
     
-    function runSlide() {
+    function tgL(id, bId) {
+        let el = document.getElementById(id), btn = document.getElementById(bId), isOff = el.style.display !== 'block';
+        ['bg-v','bg-i','bg-s'].forEach(x => document.getElementById(x).style.display = 'none');
+        ['b-v','b-i','b-s'].forEach(x => { let b = document.getElementById(x); b.className = 'btn st-off'; b.innerText = b.innerText.split(':')[0] + ': OFF'; });
+        if(sTim) clearTimeout(sTim);
+        if(isOff) { el.style.display = 'block'; btn.className = 'btn st-on'; btn.innerText = btn.innerText.split(':')[0] + ': ON'; if(id === 'bg-s') startS(); }
+    }
+
+    function startS() {
         if(!sFiles.length) return;
         document.getElementById('bg-s').src = sFiles[sIdx];
         sIdx = (sIdx + 1) % sFiles.length;
-        sTimer = setTimeout(runSlide, 4000);
+        sTim = setTimeout(startS, document.getElementById('s-spd').value * 1000);
     }
 
-    function initCam() {
-        navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(s => {
-            document.getElementById('v-src').srcObject = s;
-            const ctx = new AudioContext(), src = ctx.createMediaStreamSource(s), ans = ctx.createAnalyser();
+    // --- LOGICA CAMERA & LOGO ---
+    function tgC() {
+        let c = document.getElementById('cam-box'), b = document.getElementById('b-c');
+        if(c.style.display === 'block') { c.style.display='none'; b.className='btn st-off'; b.innerText='AI CUT: OFF'; }
+        else { c.style.display='block'; b.className='btn st-on'; b.innerText='AI CUT: ON'; }
+    }
+
+    function loadP(i) { let img = document.getElementById('inner-img'); img.src = URL.createObjectURL(i.files[0]); img.style.display='block'; }
+    function tgP() {
+        let img = document.getElementById('inner-img'), b = document.getElementById('b-p');
+        if(img.style.display === 'block') { img.style.display='none'; b.className='btn st-off'; b.innerText='LOGO: OFF'; }
+        else { img.style.display='block'; b.className='btn st-on'; b.innerText='LOGO: ON'; }
+    }
+
+    // --- AUDIO ENGINE ---
+    function initC() {
+        navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(stream => {
+            document.getElementById('v-src').srcObject = stream;
+            const ctx = new AudioContext(), src = ctx.createMediaStreamSource(stream), ans = ctx.createAnalyser();
             ans.fftSize = 256; src.connect(ans);
             const data = new Uint8Array(ans.frequencyBinCount);
             function draw() {
@@ -155,14 +187,25 @@
                 const can = document.getElementById('radial-canvas'), c = can.getContext('2d');
                 c.clearRect(0,0,400,400);
                 let sum = 0; for(let i=0; i<20; i++) sum += data[i];
-                document.getElementById('circle-box').style.transform = `scale(${1 + (sum/20/255)*0.3})`;
+                document.getElementById('circle-box').style.transform = `scale(${1 + (sum/20/255)*0.2})`;
                 c.strokeStyle = '#ffaa00'; c.lineWidth = 4;
                 for(let i=0; i<60; i++){
                     let a = (i*6)*Math.PI/180, l = data[i] * 0.4;
                     c.beginPath(); c.moveTo(200+Math.cos(a)*80, 200+Math.sin(a)*80);
                     c.lineTo(200+Math.cos(a)*(80+l), 200+Math.sin(a)*(80+l)); c.stroke();
                 }
-            } draw(); listen();
+            } draw(); upDb(document.getElementById('ev-id').value);
+        });
+    }
+
+    function upDb(id) {
+        db.off(); db = firebase.database().ref(id);
+        db.limitToLast(1).on('child_added', (sn) => {
+            const d = sn.val(), box = document.getElementById('msg-box');
+            document.getElementById('msg-user').innerText = d.author;
+            document.getElementById('msg-txt').innerText = `"${d.text}"`;
+            box.style.display = 'block';
+            if(mTim) clearTimeout(mTim); mTim = setTimeout(() => { box.style.display = 'none'; }, 8000);
         });
     }
 
